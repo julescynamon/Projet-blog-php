@@ -17,9 +17,14 @@
     transform: scale(1.1);
 }
 
-.article h2 {
-    font-size: 1.7rem;
+.article h3 {
+    font-size: 1.9rem;
     padding: 1rem 1.5rem;
+}
+
+.newsfeed-content h2 {
+    font-size: 1.5rem;
+    padding: 0 1.5rem;
 }
 
 .img-container {
@@ -33,4 +38,28 @@
 
 .overflow-img {
     overflow: hidden;
+}
+
+.newsfeed-container {
+    display: flex;
+    flex-flow: row nowrap;
+}
+
+.category-container {
+    flex: 200px;
+}
+
+.category-container li {
+    margin: 1rem 0;
+    transition: color 0.2s;
+}
+
+.category-container li:hover {
+    color: var(--color-primary);
+    cursor: pointer;
+}
+
+.small {
+    font-size: 1.2rem;
+    margin: 0 0.5rem;
 }
