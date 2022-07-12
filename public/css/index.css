@@ -1,0 +1,36 @@
+.articles-container {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.article {
+    flex: 30%;
+    margin: 1rem;
+    min-width: 300px;
+    min-height: 410px;
+    cursor: pointer;
+}
+
+.article:hover .img-container {
+    transform: scale(1.1);
+}
+
+.article h2 {
+    font-size: 1.7rem;
+    padding: 1rem 1.5rem;
+}
+
+.img-container {
+    width: 100%;
+    height: 30rem;
+    background-size: cover;
+    transition: transform 1s;
+}
+
+/* overflow */
+
+.overflow-img {
+    overflow: hidden;
+}
