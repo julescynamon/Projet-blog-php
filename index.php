@@ -51,45 +51,43 @@ if (file_exists($filename)) {
 		<div class="content">
 			<div class="newsfeed-container">
 				<ul class="category-container">
-					<li> <a href="/">Tous les articles <span class="small">(<?= count($articles) ?>)</span> </a> </li>
+					<li class=<?= $selectedCat ? '' : 'cat-active' ?>> <a href="/">Tous les articles <span class="small">(<?= count($articles) ?>)</span> </a> </li>
 					<?php foreach ($categories as $catName => $catNum) : ?>
-						<li> <a href="/?cat=<?= $catName ?>"> <?= $catName ?><span class="small">(<?= $catNum ?>)</span></a> </li>
+						<li class=<?= $selectedCat === $catName ? 'cat-active' : '' ?>> <a href="/?cat=<?= $catName ?>"> <?= $catName ?><span class="small">(<?= $catNum ?>)</span></a> </li>
 					<?php endforeach; ?>
 				</ul>
 
 				<div class="newsfeed-content">
-					<?php if(!$selectedCat) : ?>
-					<?php foreach ($categories as $cat =>
-						$num) : ?>
-						<h2><?= $cat ?></h2>
-						<div class="articles-container">
-							<?php foreach ($articlePerCategories[$cat] as $a) : ?>
-								<div class="article block">
-									<div class="overflow-img">
-										<div class="img-container" style="background-image:url(<?= $a['image'] ?>"></div>
-									</div>
-									<h3><?= $a['title']
-										?></h3>
-								</div>
-							<?php endforeach; ?>
-						</div>
-					<?php endforeach; ?>
-					<?php else : ?>
-						<h2><?= $selectedCat ?></h2>
-						<div class="articles-container">
-							<?php foreach ($articles as $a) : ?>
-								<?php if ($a['category'] === $selectedCat) : ?>
-									<div class="article block">
+					<?php if (!$selectedCat) : ?>
+						<?php foreach ($categories as $cat =>
+							$num) : ?>
+							<h2><?= $cat ?></h2>
+							<div class="articles-container">
+								<?php foreach ($articlePerCategories[$cat] as $a) : ?>
+									<a href="/show-article.php?id=<?= $a['id'] ?>" class="article block">
 										<div class="overflow-img">
 											<div class="img-container" style="background-image:url(<?= $a['image'] ?>"></div>
 										</div>
 										<h3><?= $a['title']
 											?></h3>
+									</a>
+								<?php endforeach; ?>
+							</div>
+						<?php endforeach; ?>
+					<?php else : ?>
+						<h2><?= $selectedCat ?></h2>
+						<div class="articles-container">
+							<?php foreach ($articlePerCategories[$selectedCat] as $a) : ?>
+								<a href="/show-article.php?id=<?= $a['id'] ?>" class="article block">
+									<div class="overflow-img">
+										<div class="img-container" style="background-image:url(<?= $a['image'] ?>"></div>
 									</div>
-								<?php endif; ?>
+									<h3><?= $a['title'] ?></h3>
+										
+								</a>
 							<?php endforeach; ?>
 						</div>
-					<?php endif ; ?>
+					<?php endif; ?>
 				</div>
 			</div>
 		</div>

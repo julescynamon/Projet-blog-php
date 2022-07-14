@@ -21,6 +21,20 @@ if (file_exists($filename)) {
 	) ?? [];
 }
 
+$_GET = filter_input_array(INPUT_GET, FILTER_SANITIZE_SPECIAL_CHARS);
+$id = $_GET['id'] ?? '';
+
+if ($id) {
+	$articleIndex = array_search($id, array_column($articles, 'id'));
+	$article = $articles[$articleIndex];
+
+	$title = $article['title'];
+	$image = $article['image'];
+	$category = $article['category'];
+	$content = $article['content'];
+}
+
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 	$_POST = filter_input_array(INPUT_POST, [
@@ -60,13 +74,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	}
 
 	if (empty(array_filter($errors, fn ($e) => $e !== ''))) {
-		$articles = [...$articles, [
-			'title' => $title,
-			'image' => $image,
-			'category' => $category,
-			'content' => $content,
-			'id' => time()
-		]];
+		if ($id) {
+			$articles[$articleIndex]['title'] = $title;
+			$articles[$articleIndex]['image'] = $image;
+			$articles[$articleIndex]['category'] = $category;
+			$articles[$articleIndex]['content'] = $content;
+		} else {
+			$articles = [...$articles, [
+				'title' => $title,
+				'image' => $image,
+				'category' => $category,
+				'content' => $content,
+				'id' => time()
+			]];
+		}
 		file_put_contents($filename, json_encode($articles));
 		header('Location: /');
 	}
@@ -79,9 +100,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <head>
 	<?php require_once 'includes/head.php' ?>
-	<link rel="stylesheet" href="/public/css/add-article.css">
+	<link rel="stylesheet" href="/public/css/form-article.css">
 
-	<title>Créer un article</title>
+	<title><?= $id ? 'Modifier' : 'Créer' ?> un article</title>
 </head>
 
 <body>
@@ -89,18 +110,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		<?php require_once 'includes/header.php' ?>
 		<div class="content">
 			<div class="block p-20 form-container">
-				<h1>Ecrire un article</h1>
-				<form action="/add-article.php" method="post">
+				<h1><?= $id ? "Modifier" : "Ecrire" ?> un article</h1>
+				<form action="/form-article.php<?= $id ? "?id=$id" : '' ?>" method="post">
 					<div class="form-control">
 						<label for="title">Titre</label>
-						<input type="text" name="title" id="title" value=<?= $title ?? '' ?>>
+						<input type="text" name="title" id="title" value="<?= $title ?? '' ?>">
 						<?php if ($errors['title']) : ?>
 							<p class="error"><?= $errors['title'] ?></p>
 						<?php endif; ?>
 					</div>
 					<div class="form-control">
 						<label for="image">Image</label>
-						<input type="text" name="image" id="image" value=<?= $image ?? '' ?>>
+						<input type="text" name="image" id="image" value="<?= $image ?? '' ?>">
 						<?php if ($errors['image']) : ?>
 							<p class="error"><?= $errors['image'] ?></p>
 						<?php endif; ?>
@@ -108,9 +129,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 					<div class="form-control">
 						<label for="category">Catégorie</label>
 						<select name="category" id="category">
-							<option value="technologie">Technologie</option>
-							<option value="nature">Nature</option>
-							<option value="politique">Politique</option>
+							<option <?= !$category || $category === 'technologie' ? 'selected' : '' ?> value="technologie">Technologie</option>
+							<option <?= $category === 'nature' ? 'selected' : '' ?> value="nature">Nature</option>
+							<option <?= $category === 'politique' ? 'selected' : '' ?> value="politique">Politique</option>
 						</select>
 						<?php if ($errors['category']) : ?>
 							<p class="error"><?= $errors['category'] ?></p>
@@ -118,14 +139,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 					</div>
 					<div class="form-control">
 						<label for="content">Contenu</label>
-						<textarea name="content" id="content"></textarea>
+						<textarea name="content" id="content"><?= $content ?? '' ?></textarea>
 						<?php if ($errors['content']) : ?>
 							<p class="error"><?= $errors['content'] ?></p>
 						<?php endif; ?>
 					</div>
 					<div class="form-actions">
 						<button class="btn btn-secondary" type="button">Annuler</button>
-						<button class="btn btn-primary" type="submit">Sauvegarder</button>
+						<button class="btn btn-primary" type="submit"><?= $id ? 'Modifier' : 'Sauvegarder' ?></button>
 					</div>
 				</form>
 			</div>
